@@ -125,16 +125,17 @@ func NewBlockFinder(db *leveldb.DB, cfg *config.Wrapper) *BlockFinder {
 	f := &BlockFinder{
 		db: db,
 	}
-	f.Changed(cfg.Raw())
+	f.Changed(cfg)
 	cfg.Subscribe(f)
 	return f
 }
 
 // Implements config.Handler interface
-func (f *BlockFinder) Changed(cfg config.Configuration) error {
-	folders := make([]string, len(cfg.Folders))
-	for i, folder := range cfg.Folders {
-		folders[i] = folder.ID
+func (f *BlockFinder) Changed(cfg *config.Wrapper) error {
+	cfgFolders := cfg.Folders()
+	folders := make([]string, 0, len(cfgFolders))
+	for _, folder := range cfgFolders {
+		folders = append(folders, folder.ID)
 	}
 
 	sort.Strings(folders)

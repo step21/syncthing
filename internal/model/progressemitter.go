@@ -36,7 +36,7 @@ func NewProgressEmitter(cfg *config.Wrapper) *ProgressEmitter {
 		last:     make(map[string]map[string]*pullerProgress),
 		timer:    time.NewTimer(time.Millisecond),
 	}
-	t.Changed(cfg.Raw())
+	t.Changed(cfg)
 	cfg.Subscribe(t)
 	return t
 }
@@ -81,11 +81,11 @@ func (t *ProgressEmitter) Serve() {
 }
 
 // Interface method to handle configuration changes
-func (t *ProgressEmitter) Changed(cfg config.Configuration) error {
+func (t *ProgressEmitter) Changed(cfg *config.Wrapper) error {
 	t.mut.Lock()
 	defer t.mut.Unlock()
 
-	t.interval = time.Duration(cfg.Options.ProgressUpdateIntervalS) * time.Second
+	t.interval = time.Duration(cfg.Options().ProgressUpdateIntervalS) * time.Second
 	if debug {
 		l.Debugln("progress emitter: updated interval", t.interval)
 	}

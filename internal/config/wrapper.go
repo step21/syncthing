@@ -21,12 +21,12 @@ import (
 // http.Handler
 
 type Handler interface {
-	Changed(Configuration) error
+	Changed(*Wrapper) error
 }
 
-type HandlerFunc func(Configuration) error
+type HandlerFunc func(*Wrapper) error
 
-func (fn HandlerFunc) Changed(cfg Configuration) error {
+func (fn HandlerFunc) Changed(cfg *Wrapper) error {
 	return fn(cfg)
 }
 
@@ -76,12 +76,12 @@ func Load(path string, myID protocol.DeviceID) (*Wrapper, error) {
 // handlers. It is started automatically by Wrap() and Load() and should not
 // be run manually.
 func (w *Wrapper) Serve() {
-	for cfg := range w.replaces {
+	for _ = range w.replaces {
 		w.sMut.Lock()
 		subs := w.subs
 		w.sMut.Unlock()
 		for _, h := range subs {
-			h.Changed(cfg)
+			h.Changed(w)
 		}
 	}
 }
