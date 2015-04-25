@@ -350,7 +350,7 @@ func main() {
 			// Use leveldb database locks to protect against concurrent upgrades
 			_, err = leveldb.OpenFile(locations[locDatabase], &opt.Options{OpenFilesCacheCapacity: 100})
 			if err != nil {
-				l.Fatalln("Cannot upgrade, database seems to be locked. Is another copy of Syncthing already running?")
+				l.Fatalln("Cannot upgrade, database seems to be locked. Is another copy of Syncthing already running?\nEven if this is the directory of the running syncthing installation, please check if and how you started it.\nIf it is running as a system service, you should should it down using the appropriate command.")
 			}
 
 			err = upgrade.To(rel)
